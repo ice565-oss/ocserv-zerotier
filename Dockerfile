@@ -1,8 +1,7 @@
 FROM alpine:3.19
 
-# Включаем официальные репозитории main и community для Alpine 3.19
-RUN sed -i 's/v[0-9]\.[0-9]/v3.19/g' /etc/apk/repositories && \
-    echo "http://dl-cdn.alpinelinux.org/alpine/v3.19/community" >> /etc/apk/repositories && \
+# Включаем штатный community репозиторий убиранием комментария '#'
+RUN sed -i 's/^#\(.*community\)/\1/' /etc/apk/repositories && \
     apk add --no-cache \
     ocserv \
     zerotier-one \
