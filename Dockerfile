@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-# Установка системных утилит и ocserv
+# 1. Установка базовых зависимостей и ocserv
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ocserv \
     supervisor \
@@ -11,13 +11,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-# Установка ZeroTier One
+# 2. Установка ZeroTier через официальный скрипт
 RUN curl -s https://install.zerotier.com | bash || true
 
-# Создание каталогов
+# 3. Подготовка директорий
 RUN mkdir -p /var/log/supervisor /etc/zerotier-one /var/lib/zerotier-one /etc/ocserv
 
-# Копирование файлов проекта
+# 4. Копирование конфигураций
 COPY supervisord.conf /etc/supervisord.conf
 COPY entrypoint.sh /entrypoint.sh
 
