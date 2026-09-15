@@ -1,8 +1,8 @@
-FROM alpine:latest
+FROM alpine:3.19
 
-# Включаем репозитории main и community, затем устанавливаем пакеты
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/latest-stable/main" > /etc/apk/repositories && \
-    echo "http://dl-cdn.alpinelinux.org/alpine/latest-stable/community" >> /etc/apk/repositories && \
+# Включаем официальные репозитории main и community для Alpine 3.19
+RUN sed -i 's/v[0-9]\.[0-9]/v3.19/g' /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/v3.19/community" >> /etc/apk/repositories && \
     apk add --no-cache \
     ocserv \
     zerotier-one \
@@ -11,10 +11,10 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/latest-stable/main" > /etc/apk/re
     iproute2 \
     ca-certificates
 
-# Создаем директории
+# Создаем рабочие каталоги
 RUN mkdir -p /var/log/supervisor /etc/zerotier-one /var/lib/zerotier-one /etc/ocserv
 
-# Копируем конфиги и скрипт
+# Копируем конфигурационные файлы и entrypoint
 COPY supervisord.conf /etc/supervisord.conf
 COPY entrypoint.sh /entrypoint.sh
 
