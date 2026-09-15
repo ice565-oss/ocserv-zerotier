@@ -1,19 +1,23 @@
-FROM alpine:3.19
+FROM debian:bookworm-slim
 
-# Включаем штатный community репозиторий убиранием комментария '#'
-RUN sed -i 's/^#\(.*community\)/\1/' /etc/apk/repositories && \
-    apk add --no-cache \
+# Установка зависимостей и curl
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ocserv \
-    zerotier-one \
     supervisor \
     iptables \
     iproute2 \
-    ca-certificates
+    ca-certificates \
+    curl \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Создаем рабочие каталоги
+# Официальная установка ZeroTier для Debian
+RUN curl -s https://install.zerotier.com | bash || true
+
+# Создаем директории
 RUN mkdir -p /var/log/supervisor /etc/zerotier-one /var/lib/zerotier-one /etc/ocserv
 
-# Копируем конфигурационные файлы и entrypoint
+# Копируем конфиги и entrypoint
 COPY supervisord.conf /etc/supervisord.conf
 COPY entrypoint.sh /entrypoint.sh
 
